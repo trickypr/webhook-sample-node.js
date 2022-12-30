@@ -1,7 +1,9 @@
 require('dotenv').config()
+const https = require('https')
 const express = require('express')
 const bodyParser = require('body-parser')
 const crypto = require('crypto')
+const fs = require('fs')
 
 const app = express()
 const port = process.env.PORT || 4000
@@ -69,4 +71,9 @@ app.post('/webhook', (req, res) => {
   }
 })
 
-app.listen(port, () => console.log(`Webhook Sample Node.js listening on port ${port}!`))
+const httpsServer = https.createServer({
+  key: fs.readFileSync(process.env.KEY),
+  cert: fs.readFileSync(process.env.CERT)
+}, app);
+
+httpsServer.listen(port, () => console.log(`Webhook Sample Node.js listening on port ${port}!`))
